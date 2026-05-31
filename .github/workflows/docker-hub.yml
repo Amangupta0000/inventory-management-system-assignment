@@ -1,6 +1,9 @@
 name: Docker Hub Backend Image
 
 on:
+  push:
+     branches:
+       - main 
   workflow_dispatch:
 
 jobs:
