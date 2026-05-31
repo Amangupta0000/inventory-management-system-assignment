@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import OrderForm from '../components/OrderForm'
 import { getOrders, createOrder, getProducts, getCustomers } from '../api/client'
+import axios from 'axios'
+
+const BASE_URL = import.meta.env.VITE_API_URL || ''
 
 export default function Orders() {
   const [orders, setOrders] = useState([])
@@ -35,6 +38,17 @@ export default function Orders() {
     }
   }
 
+  const handleCancel = async (id) => {
+    if (!confirm('Cancel this order? Stock will be restored.')) return
+    try {
+      await axios.delete(`${BASE_URL}/api/orders/${id}`)
+      toast.success('Order cancelled, stock restored')
+      fetchAll()
+    } catch {
+      toast.error('Failed to cancel order')
+    }
+  }
+
   const statusColor = {
     pending: 'bg-yellow-100 text-yellow-800',
     completed: 'bg-green-100 text-green-800',
@@ -49,7 +63,7 @@ export default function Orders() {
         <table className="w-full text-sm bg-white">
           <thead className="bg-indigo-50 text-gray-600">
             <tr>
-              {['ID', 'Customer', 'Product', 'Qty', 'Total', 'Status', 'Date'].map(h => (
+              {['ID', 'Customer', 'Product', 'Qty', 'Total', 'Status', 'Date', 'Action'].map(h => (
                 <th key={h} className="px-4 py-3 text-left font-semibold">{h}</th>
               ))}
             </tr>
@@ -70,10 +84,14 @@ export default function Orders() {
                 <td className="px-4 py-3 text-gray-400 text-xs">
                   {new Date(o.created_at).toLocaleDateString()}
                 </td>
+                <td className="px-4 py-3">
+                  <button onClick={() => handleCancel(o.id)}
+                    className="text-red-500 hover:underline text-xs">Cancel</button>
+                </td>
               </tr>
             ))}
             {orders.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-6 text-center text-gray-400">No orders yet</td></tr>
+              <tr><td colSpan={8} className="px-4 py-6 text-center text-gray-400">No orders yet</td></tr>
             )}
           </tbody>
         </table>

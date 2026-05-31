@@ -54,3 +54,15 @@ def create_order(db: Session, order: OrderCreate):
     db.commit()
     db.refresh(db_order)
     return db_order
+
+
+def delete_order(db: Session, order_id: int):
+    order = get_order(db, order_id)
+    # Restore stock when order is cancelled
+    from models.product import Product
+    product = db.query(Product).filter(Product.id == order.product_id).first()
+    if product:
+        product.stock += order.quantity
+    db.delete(order)
+    db.commit()
+    return {"message": "Order cancelled and stock restored"}

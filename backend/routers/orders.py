@@ -21,3 +21,8 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
 @router.get("/{order_id}", response_model=OrderOut)
 def get_order(order_id: int, db: Session = Depends(get_db)):
     return order_crud.get_order(db, order_id)
+
+
+@router.delete("/{order_id}")
+def delete_order(order_id: int, db: Session = Depends(get_db)):
+    return order_crud.delete_order(db, order_id)

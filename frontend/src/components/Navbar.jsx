@@ -11,6 +11,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
         <span className="text-white font-bold text-lg tracking-tight">📦 InventoryOS</span>
         <div className="flex gap-2">
+          <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
           <NavLink to="/products" className={linkClass}>Products</NavLink>
           <NavLink to="/customers" className={linkClass}>Customers</NavLink>
           <NavLink to="/orders" className={linkClass}>Orders</NavLink>
